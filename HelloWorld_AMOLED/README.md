@@ -6,17 +6,18 @@ Códigos Arduino para exibir "Hello World" no display AMOLED da placa LilyGo T-D
 
 Se o Serial Monitor mostra "Hello World exibido no display!" mas a tela está preta, o problema é a **configuração da biblioteca TFT_eSPI**.
 
-**SOLUÇÃO RÁPIDA**: Use o arquivo `HelloWorld_LilyGo.ino` em vez do `HelloWorld_AMOLED.ino`!
+**SOLUÇÃO RÁPIDA**: Use o arquivo `HelloWorld_Sprite.ino` ⭐ - é o mais simples e funciona direto!
 
 ---
 
 ## 📁 Arquivos Disponíveis
 
-### 1. `HelloWorld_LilyGo.ino` ⭐ **RECOMENDADO**
-- Usa a biblioteca oficial LilyGo
-- **MAIS CONFIÁVEL** - funciona sem configuração complexa
-- Melhor compatibilidade com o hardware AMOLED
-- **USE ESTE SE O OUTRO NÃO FUNCIONAR!**
+### 1. `HelloWorld_Sprite.ino` ⭐⭐⭐ **RECOMENDADO - MAIS FÁCIL!**
+- **FUNCIONA SEM INSTALAR BIBLIOTECAS EXTRAS!**
+- Todos os arquivos necessários (rm67162.h, rm67162.cpp, pins_config.h) já estão inclusos
+- Apenas instale TFT_eSPI pelo Gerenciador de Bibliotecas
+- Baseado no exemplo oficial da LilyGo
+- **USE ESTE!** É a forma mais simples e confiável!
 
 ### 2. `HelloWorld_TFT_eSPI_Fixed.ino` 🔧 **DIAGNÓSTICO**
 - Versão com TFT_eSPI corrigida
@@ -24,33 +25,31 @@ Se o Serial Monitor mostra "Hello World exibido no display!" mas a tela está pr
 - Mostra cores piscando (vermelho, verde, azul)
 - Útil para testar se o display está funcionando
 
-### 3. `HelloWorld_AMOLED.ino`
+### 3. `HelloWorld_LilyGo.ino`
+- Usa a biblioteca oficial LilyGo-AMOLED-Series
+- Requer instalação da biblioteca específica
+- **ATENÇÃO**: Pode dar erro de compilação dependendo da versão da biblioteca
+
+### 4. `HelloWorld_AMOLED.ino`
 - Versão original com TFT_eSPI
 - Requer configuração manual da biblioteca
 - Use apenas se você já configurou o TFT_eSPI corretamente
 
 ---
 
-## 🚀 Início Rápido (MÉTODO RECOMENDADO)
+## 🚀 Início Rápido (MÉTODO MAIS FÁCIL!)
 
-### Usando `HelloWorld_LilyGo.ino`
+### Usando `HelloWorld_Sprite.ino` ⭐
 
-#### 1. Instalar Biblioteca LilyGo
+#### 1. Instalar apenas TFT_eSPI
 
-**Método A - Gerenciador de Bibliotecas (Mais fácil)**:
 ```
 Arduino IDE → Sketch → Include Library → Manage Libraries
-Procure: "LilyGo-AMOLED-Series"
+Procure: "TFT_eSPI"
 Clique em Install
 ```
 
-**Método B - GitHub**:
-```
-1. Baixe: https://github.com/Xinyuan-LilyGO/T-Display-S3-AMOLED
-2. Clique em "Code" → "Download ZIP"
-3. Arduino IDE → Sketch → Include Library → Add .ZIP Library
-4. Selecione o arquivo baixado
-```
+**Pronto!** Você NÃO precisa configurar nada na biblioteca TFT_eSPI porque o código usa os drivers inclusos (rm67162.h/cpp e pins_config.h) que já estão na pasta do projeto!
 
 #### 2. Configurar ESP32
 
@@ -79,12 +78,14 @@ Upload Speed: "921600"
 #### 4. Upload
 
 ```
-1. Abra HelloWorld_LilyGo.ino
+1. Abra HelloWorld_Sprite.ino
 2. Conecte a placa via USB-C
 3. Selecione a porta correta (Tools → Port)
 4. Clique em Upload (→)
 5. Aguarde... "Hello World!" deve aparecer!
 ```
+
+**Se der erro de compilação**, verifique se a PSRAM está habilitada (veja item 3 acima).
 
 ---
 
@@ -142,18 +143,25 @@ Instale a biblioteca
 ## 🐛 Troubleshooting
 
 ### Display completamente preto
-- ✅ Verifique se PIN_POWER_ON está funcionando
+- ✅ Verifique se PIN_LED está funcionando (pino 38)
 - ✅ Use `HelloWorld_TFT_eSPI_Fixed.ino` para diagnóstico
 - ✅ Se você viu as cores piscarem, o display funciona!
-- ✅ Problema é configuração da biblioteca → Use `HelloWorld_LilyGo.ino`
+- ✅ Problema é configuração da biblioteca → Use `HelloWorld_Sprite.ino`
 
 ### Erro de compilação
 ```
 "TFT_eSPI.h: No such file"
-→ Instale a biblioteca TFT_eSPI ou LilyGo-AMOLED-Series
+→ Instale a biblioteca TFT_eSPI pelo Gerenciador de Bibliotecas
+
+"class LilyGo_AMOLED has no member named 'fillScreen'"
+→ A biblioteca LilyGo-AMOLED-Series mudou a API
+→ Use HelloWorld_Sprite.ino em vez de HelloWorld_LilyGo.ino
 
 "LilyGo_AMOLED.h: No such file"
-→ Instale a biblioteca LilyGo-AMOLED-Series
+→ Instale a biblioteca LilyGo-AMOLED-Series (mas use HelloWorld_Sprite.ino)
+
+"PSRAM not turned on" ou "BOARD_HAS_PSRAM"
+→ Tools → PSRAM → "OPI PSRAM"
 
 "Compilation error: ..."
 → Verifique se selecionou "ESP32S3 Dev Module" como placa
@@ -215,16 +223,16 @@ TFT_BL = 38         // Controle (geralmente não usado em AMOLED)
 
 ---
 
-## ✅ Checklist Rápido
+## ✅ Checklist Rápido (HelloWorld_Sprite.ino)
 
-- [ ] Biblioteca instalada (LilyGo-AMOLED-Series ou TFT_eSPI)
+- [ ] Biblioteca TFT_eSPI instalada (apenas esta!)
 - [ ] ESP32 board manager instalado
 - [ ] Placa configurada como "ESP32S3 Dev Module"
 - [ ] USB CDC On Boot = "Enabled"
-- [ ] PSRAM = "OPI PSRAM"
+- [ ] PSRAM = "OPI PSRAM" ⚠️ **IMPORTANTE!**
 - [ ] Cabo USB-C conectado
 - [ ] Porta serial correta selecionada
-- [ ] Se TFT_eSPI: User_Setup.h configurado
+- [ ] Arquivos rm67162.h, rm67162.cpp e pins_config.h na mesma pasta do .ino
 - [ ] Serial Monitor em 115200 baud
 
-**Ainda com problemas?** Tente `HelloWorld_LilyGo.ino` - é a forma mais confiável!
+**Ainda com problemas?** Verifique se a PSRAM está ativada - é o erro mais comum!
